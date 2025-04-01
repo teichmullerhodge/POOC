@@ -20,20 +20,16 @@ class Window {
   char *title;
   struct Color backgroundColor;
 
-  void (*new)(class Window *self, u32 width, u32 height, const char *title);
-
-  struct Color (*get_color)(class Window *self);
-  void (*set_color)(class Window *self, u8 r, u8 g, u8 b, u8 a);
-
-  void (*set_width)(class Window *self, u32 width);
-  void (*set_height)(class Window *self, u32 height);
-
-  u32 (*get_width)(class Window *self);
-  u32 (*get_height)(class Window *self);
-
-  void (*set_title)(class Window *self, const char *newTitle);
-  char *(*get_title)(class Window *self);
-  void (*destruct)(class Window *self);
+  struct Color fn(get_color)(class Window *self);
+  void fn(new)(class Window *self, u32 width, u32 height, const char *title);
+  void fn(set_color)(class Window *self, u8 r, u8 g, u8 b, u8 a);
+  void fn(set_width)(class Window *self, u32 width);
+  void fn(set_height)(class Window *self, u32 height);
+  u32 fn(get_width)(class Window *self);
+  u32 fn(get_height)(class Window *self);
+  void fn(set_title)(class Window *self, const char *newTitle);
+  char *fn(get_title)(class Window *self);
+  void fn(destruct)(class Window *self);
 };
 
 void set_color extends(Window)(class Window *self, u8 r, u8 g, u8 b, u8 a) {
@@ -44,10 +40,13 @@ void set_color extends(Window)(class Window *self, u8 r, u8 g, u8 b, u8 a) {
 }
 
 void set_width extends(Window)(class Window *self, u32 width) {
+
+  instanceof (set_width);
   self->width = width;
 }
 
 void set_height extends(Window)(class Window *self, u32 height) {
+  instanceof (set_height);
   self->height = height;
 }
 
@@ -82,11 +81,17 @@ void public extends(Window)(class Window *self) {
   declare(self, destruct);
 }
 
+void private extends(Window)(class Window *self) {
+
+  omit(self, get_height);
+  omit(self, get_width);
+}
+
 void new extends(Window)(class Window *self, u32 width, u32 height,
                          const char *title) {
 
   public(self);
-
+  private(self);
   self->height = height;
   self->width = width;
   size_t titleLen = strlen(title);
